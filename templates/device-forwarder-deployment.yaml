@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: edgehog-device-forwarder
+  name: edgehog-device-forwarder
+  namespace: {{ .Values.namespace | default "edgehog" }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edgehog-device-forwarder
+  template:
+    metadata:
+      labels:
+        app: edgehog-device-forwarder
+    spec:
+      containers:
+      - env:
+        - name: RELEASE_NAME
+          value: edgehog-device-forwarder
+        - name: PORT
+          value: "4000"
+        - name: PHX_HOST
+          value: {{ .Values.deviceForwarder.host | quote }}
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              key: secret-key-base
+              name: edgehog-device-forwarder-secret-key-base
+        image: edgehogdevicemanager/edgehog-device-forwarder:0.1.0
+        imagePullPolicy: Always
+        name: edgehog-device-forwarder
+        ports:
+        - containerPort: 4000
+          name: http
+          protocol: TCP

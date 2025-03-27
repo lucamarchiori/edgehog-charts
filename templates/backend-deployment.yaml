@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: edgehog-backend
+  name: edgehog-backend
+  namespace: {{ .Values.namespace | default "edgehog" }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edgehog-backend
+  template:
+    metadata:
+      labels:
+        app: edgehog-backend
+    spec:
+      containers:
+      - name: edgehog-backend
+        image: edgehogdevicemanager/edgehog-backend:0.9.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+          name: http
+          protocol: TCP
+        env:
+        - name: RELEASE_NAME
+          value: edgehog
+        - name: PORT
+          value: "4000"
+        - name: URL_HOST
+          value: {{ .Values.backend.host | quote }}
+        - name: DATABASE_HOSTNAME
+          value: {{ .Values.database.hostname | quote }}
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              key: database
+              name: edgehog-db-connection
+        - name: DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: edgehog-db-connection
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: edgehog-db-connection
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              key: secret-key-base
+              name: edgehog-secret-key-base
+        - name: MAX_UPLOAD_SIZE_BYTES
+          value: {{ .Values.backend.maxUploadSizeBytes | default "4294967296" | quote }}
+        {{- if eq .Values.s3.provider "gcp" }}
+        - name: S3_GCP_CREDENTIALS
+          valueFrom:
+            secretKeyRef:
+              key: gcp-credentials
+              name: edgehog-s3-credentials
+        {{- end }}
+        {{- if eq .Values.s3.provider "minio" }}
+        - name: S3_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: edgehog-minio-connection
+              key: minio-root-user
+        - name: S3_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: edgehog-minio-connection
+              key: minio-root-password
+        {{- end }}
+        - name: S3_SCHEME
+          value: {{ .Values.s3.scheme | default "http" | quote }}
+        - name: S3_HOST
+          value: {{ .Values.s3.host | quote }}
+        - name: S3_PORT
+          value: {{ .Values.s3.port | quote }}
+        - name: S3_BUCKET
+          value: {{ .Values.s3.bucket | quote }}
+        - name: S3_ASSET_HOST
+          value: {{ .Values.s3.assetHost | quote }}
+        - name: S3_REGION
+          value: {{ .Values.s3.region | quote }}
+        - name: EDGEHOG_FORWARDER_HOSTNAME
+          value: {{ .Values.deviceForwarder.host | quote }}
+        - name: EDGEHOG_FORWARDER_PORT
+          value: {{ .Values.deviceForwarder.port | default "443" | quote }}
+        - name: EDGEHOG_FORWARDER_SECURE_SESSIONS
+          value: {{ .Values.deviceForwarder.secureSessions | default "true" | quote }}

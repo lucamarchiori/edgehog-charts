@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: edgehog-device-forwarder
+  name: edgehog-device-forwarder
+  namespace: {{ .Values.namespace | default "edgehog" }}
+spec:
+  ports:
+  - port: 4000
+    protocol: TCP
+    targetPort: 4000
+  selector:
+    app: edgehog-device-forwarder

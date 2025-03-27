@@ -1,0 +1,12 @@
+dependencies:
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.17.1
+- name: ingress-nginx
+  repository: https://kubernetes.github.io/ingress-nginx
+  version: 4.11.0
+- name: astarte-operator
+  repository: https://helm.astarte-platform.org
+  version: 24.5.1
+digest: sha256:9a4eee85dc21e4f05f06409fed781b45bc9fca89798e2056f61258f60e000be1
+generated: "2025-03-25T16:08:36.500513884+01:00"
