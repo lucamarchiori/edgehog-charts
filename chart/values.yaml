@@ -28,7 +28,7 @@ letsencrypt:
   email: "admin@example.com"
 
 s3:
-  # provider of S3 storage. Curretnly can be set to "GCP"  (Google Cloud) or " minio" 
+  # provider of S3 storage. Curretnly can be set to "gcp"  (Google Cloud) or " minio" 
   provider: "minio"
   # scheme (http or https) for the S3 storage
   scheme: "http"
@@ -42,3 +42,8 @@ s3:
   assetHost: "test"
   # region where the S3 storage resides.
   region: "test"
+
+enabledSecrets:
+  ipbase: false
+  googleGeolocation: false
+  googleGeocoding: false

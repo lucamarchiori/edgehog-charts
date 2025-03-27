@@ -72,7 +72,7 @@ spec:
             secretKeyRef:
               name: edgehog-minio-connection
               key: minio-root-password
-        {{- end }}
+        {{- else if eq .Values.s3.provider "gcp" }}
         - name: S3_SCHEME
           value: {{ .Values.s3.scheme | default "http" | quote }}
         - name: S3_HOST
@@ -85,9 +85,31 @@ spec:
           value: {{ .Values.s3.assetHost | quote }}
         - name: S3_REGION
           value: {{ .Values.s3.region | quote }}
+        {{- end }}
         - name: EDGEHOG_FORWARDER_HOSTNAME
           value: {{ .Values.deviceForwarder.host | quote }}
         - name: EDGEHOG_FORWARDER_PORT
           value: {{ .Values.deviceForwarder.port | default "443" | quote }}
         - name: EDGEHOG_FORWARDER_SECURE_SESSIONS
           value: {{ .Values.deviceForwarder.secureSessions | default "true" | quote }}
+        {{- if .Values.enabledSecrets.ipbase }}
+        - name: IPBASE_API_KEY
+         valueFrom:
+           secretKeyRef:
+             key: api-key
+             name: edgehog-ipbase-credentials
+        {{- end }}
+        {{- if .Values.enabledSecrets.googleGeolocation }}
+        - name: GOOGLE_GEOLOCATION_API_KEY
+         valueFrom:
+           secretKeyRef:
+             key: api-key
+             name: edgehog-google-geolocation-credentials
+        {{- end }}
+        {{- if .Values.enabledSecrets.googleGeocoding }}
+        - name: GOOGLE_GEOCODING_API_KEY
+         valueFrom:
+           secretKeyRef:
+             key: api-key
+             name: edgehog-google-geocoding-credentials
+        {{- end }}
