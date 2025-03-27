@@ -2,9 +2,12 @@
 # Script for development purposes only
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add cert-manager https://charts.jetstack.io
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
 # Install Dependencies
-echo "Installing PostgreSQL..."
+echo "Installing nginx-ingress..."
+helm install --namespace edgehog-dev ingress-nginx ingress-nginx/ingress-nginx --version 4.11.0
+echo "Installing PostgreSQL..."kgpa
 helm install --namespace edgehog-dev --create-namespace postgres bitnami/postgresql --version 16.5.6
 echo "Installing MinIO..."
 helm install --namespace edgehog-dev --create-namespace minio bitnami/minio --version 15.0.7
