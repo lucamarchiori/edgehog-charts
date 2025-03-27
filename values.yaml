@@ -7,17 +7,17 @@ database:
 
 backend:
   # host of the Edgehog backend
-  host: "test"
+  host: "api.edgehog.customdomain.com"
   # maxUploadSizeBytes is the maximum dimension for uploads, particularly relevant for OTA updates. If omitted, it defaults to 4 Gigabytes.
   maxUploadSizeBytes: 2048 
 
 frontend:
   # host of the frontend
-  host: "test"
+  host: "edgehog.customdomain.com"
 
 deviceForwarder:
   # host of the device forwarder. It should only contain the hostname without the http:// or https:// scheme
-  host: "test"
+  host: "forwarder.edgehog..customdomain.com"
   # port for the instance of Edgehog Device Forwarder. It defaults to 443
   port: 443
   # secureSessions can be either true or false, it indicates whether devices use TLS to connect to the Edgehog Device Forwarder
@@ -26,7 +26,6 @@ deviceForwarder:
 letsencrypt:
   # email address that will be used for the ACME account for LetsEncrypt
   email: "admin@example.com"
-
 
 s3:
   # provider of S3 storage. Curretnly can be set to "GCP"  (Google Cloud) or " minio" 
