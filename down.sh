@@ -8,4 +8,4 @@ kubectl delete all --all -n edgehog-dev
 kubectl delete pvc --all -n edgehog-dev
 kubectl delete secrets --all -n edgehog-dev
 
-minikube tunnel -c
+minikube tunnel -c &> /dev/null &
