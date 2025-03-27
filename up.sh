@@ -7,7 +7,7 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # Install Dependencies
 echo "Installing nginx-ingress..."
 helm install --namespace edgehog-dev --create-namespace ingress-nginx ingress-nginx/ingress-nginx --version 4.11.0
-echo "Installing PostgreSQL..."kgpa
+echo "Installing PostgreSQL..."
 helm install --namespace edgehog-dev --create-namespace postgres bitnami/postgresql --version 16.5.6
 echo "Installing MinIO..."
 helm install --namespace edgehog-dev --create-namespace minio bitnami/minio --version 15.0.7
