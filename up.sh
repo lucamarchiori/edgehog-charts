@@ -44,7 +44,7 @@ helm install --namespace edgehog-dev \
       --set frontend.host=${HOST_FRONTEND} \
       --set backend.host=${HOST_BACKEND} \
       --set deviceForwarder.host=${HOST_DEVICE_FORWARDER} \
-      edgehog .
+      edgehog ./chart
 
 echo "Frontend: ${HOST_FRONTEND}"
 echo "Backend: ${HOST_BACKEND}"
