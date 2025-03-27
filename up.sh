@@ -33,5 +33,20 @@ kubectl create secret generic -n edgehog-dev  edgehog-secret-key-base \
 kubectl create secret generic -n edgehog-dev edgehog-device-forwarder-secret-key-base \
   --from-literal="secret-key-base=$(openssl rand -base64 48)"
 
-helm install --namespace edgehog-dev edgehog .
+minikube tunnel
+export TUNNEL_IP=$(kubectl -n edgehog-dev get service ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
+export HOST_FRONTEND="edgehog.${TUNNEL_IP}.nip.io"
+export HOST_BACKEND="api.edgehog.${TUNNEL_IP}.nip.io"
+export HOST_DEVICE_FORWARDER="forwarder.edgehog.${TUNNEL_IP}.nip.io"
+
+helm install --namespace edgehog-dev \
+      --set frontend.host=${HOST_FRONTEND} \
+      --set backend.host=${HOST_BACKEND} \
+      --set deviceForwarder.host=${HOST_DEVICE_FORWARDER} \
+      edgehog .
+
+echo "Frontend: ${HOST_FRONTEND}"
+echo "Backend: ${HOST_BACKEND}"
+echo "Device forwarder: ${HOST_DEVICE_FORWARDER}"
 
