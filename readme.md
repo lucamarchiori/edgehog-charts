@@ -137,3 +137,30 @@ $ kubectl create secret generic -n edgehog edgehog-s3-credentials \
 Values to be replaced
 - `ACCESS-KEY-ID`: the access key ID for your S3 storage.
 - `SECRET-ACCESS-KEY`: the secret access key for your S3 storage.
+
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| backend.host | string | `"api.edgehog.customdomain.com"` | host of the Edgehog backend |
+| backend.maxUploadSizeBytes | int | `2048` | maxUploadSizeBytes is the maximum dimension for uploads, particularly relevant for OTA updates. If omitted, it defaults to 4 Gigabytes. |
+| database.hostname | string | `"postgres-postgresql.edgehog-dev.svc.cluster.local"` | hostname of the PostgreSQL database. |
+| deviceForwarder.host | string | `"forwarder.edgehog..customdomain.com"` | host of the device forwarder. It should only contain the hostname without the http:// or https:// scheme |
+| deviceForwarder.port | int | `443` | port for the instance of Edgehog Device Forwarder. It defaults to 443 |
+| deviceForwarder.secureSessions | bool | `true` | secureSessions can be either true or false, it indicates whether devices use TLS to connect to the Edgehog Device Forwarder |
+| enabledSecrets.googleGeocoding | bool | `false` |  |
+| enabledSecrets.googleGeolocation | bool | `false` |  |
+| enabledSecrets.ipbase | bool | `false` |  |
+| frontend.host | string | `"edgehog.customdomain.com"` | host of the frontend |
+| letsencrypt.email | string | `"admin@example.com"` | email address that will be used for the ACME account for LetsEncrypt |
+| namespace | string | `"edgehog-dev"` | namespace of the Edgehog deployment. By default everything is deployed to the edgehog namespace in the Kubernetes cluster, but Edgehog can be deployed in any namespace |
+| s3.assetHost | string | `"test"` | assetHost for the S3 storage, e.g. storage.googleapis.com/<S3-BUCKET> for GCP or <S3-BUCKET>.s3.amazonaws.com for AWS. |
+| s3.bucket | string | `"test"` | bucket name for the S3 storage. |
+| s3.host | string | `"test"` | host for the S3 storage |
+| s3.port | string | `"test"` | port for the S3 storage. This has to be put in double quotes to force it to be interpreted as a string. |
+| s3.provider | string | `"minio"` | provider of S3 storage. Curretnly can be set to "gcp"  (Google Cloud) or " minio"  |
+| s3.region | string | `"test"` | region where the S3 storage resides. |
+| s3.scheme | string | `"http"` | scheme (http or https) for the S3 storage |
+
+----------------------------------------------
