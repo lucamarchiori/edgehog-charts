@@ -9,6 +9,9 @@ Start Minikube
 minikube start --memory=10000 --cpus=4 --driver=virtualbox --addons metallb ingress && minikube addons enable metallb
 ```
 
+The installation script deploy all the dependencies and Edgehog itself in the "edgehog-dev" namespace. Feel free to edit the scripts to change the namespace.
+If you get `"INSTALLATION FAILED: cannot re-use a name that is still in use"` please run `./down.sh` script to remove duplicated or conflicting components. The same script can be used to remove all the components installed. 
+
 Run installation script:
 ```bash
 ./up.sh
