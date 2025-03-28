@@ -19,6 +19,34 @@ export POSTGRES_PASSWORD=$(kubectl get secret --namespace edgehog-dev postgres-p
 export MINIO_ROOT_USER=$(kubectl get secret --namespace edgehog-dev minio -o jsonpath="{.data.root-user}" | base64 -d)
 export MINIO_ROOT_PASSWORD=$(kubectl get secret --namespace edgehog-dev minio -o jsonpath="{.data.root-password}" | base64 -d)
 
+# CONFIGURE METALLB TO USE MINIKUBE IP ADDRESS RANGE
+
+export MK_BASE_NETWORK_ADDRESS=$(minikube ip | sed 's/\.[0-9]*$//')
+kubectl -n metallb-system delete configmaps config
+kubectl -n metallb-system apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: metallb-system
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - ${MK_BASE_NETWORK_ADDRESS}.150-${MK_BASE_NETWORK_ADDRESS}.250
+EOF
+
+# WAIT FOR LOAD BALANCER TO GET CONFIGURED
+sleep 5s
+
+# EXPORT DOMAINS WITH LOAD BALANCER IP
+export LB_IP=$(kubectl -n edgehog-dev get service ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+export HOST_FRONTEND="edgehog.${LB_IP}.nip.io"
+export HOST_BACKEND="api.edgehog.${LB_IP}.nip.io"
+export HOST_DEVICE_FORWARDER="forwarder.edgehog.${LB_IP}.nip.io"
+
 kubectl create secret generic -n edgehog-dev edgehog-db-connection \
   --from-literal="database=postgres" \
   --from-literal="username=postgres" \
@@ -33,13 +61,6 @@ kubectl create secret generic -n edgehog-dev  edgehog-secret-key-base \
 
 kubectl create secret generic -n edgehog-dev edgehog-device-forwarder-secret-key-base \
   --from-literal="secret-key-base=$(openssl rand -base64 48)"
-
-minikube tunnel &> /dev/null &
-export TUNNEL_IP=$(kubectl -n edgehog-dev get service ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-
-export HOST_FRONTEND="edgehog.${TUNNEL_IP}.nip.io"
-export HOST_BACKEND="api.edgehog.${TUNNEL_IP}.nip.io"
-export HOST_DEVICE_FORWARDER="forwarder.edgehog.${TUNNEL_IP}.nip.io"
 
 helm install --namespace edgehog-dev \
       --set frontend.host=${HOST_FRONTEND} \
