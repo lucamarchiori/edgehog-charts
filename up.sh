@@ -3,6 +3,7 @@
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add cert-manager https://charts.jetstack.io
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
 
 # Install Dependencies
 echo "Installing nginx-ingress..."
