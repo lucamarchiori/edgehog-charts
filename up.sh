@@ -1,5 +1,7 @@
 
 # Script for development purposes only
+minikube addons enable metallb
+
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add cert-manager https://charts.jetstack.io
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -71,4 +73,3 @@ helm install --namespace edgehog-dev \
 echo "Frontend: ${HOST_FRONTEND}"
 echo "Backend: ${HOST_BACKEND}"
 echo "Device forwarder: ${HOST_DEVICE_FORWARDER}"
-
