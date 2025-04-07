@@ -29,7 +29,6 @@ spec:
               key: secret-key-base
               name: edgehog-device-forwarder-secret-key-base
         image: edgehogdevicemanager/edgehog-device-forwarder:0.1.0
-        imagePullPolicy: Always
         name: edgehog-device-forwarder
         ports:
         - containerPort: 4000
