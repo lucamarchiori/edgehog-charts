@@ -1,0 +1,17 @@
+apiVersion: ingress.astarte-platform.org/v1alpha1
+kind: AstarteDefaultIngress
+metadata:
+  name: adi
+  namespace: astarte
+spec:
+  astarte: astarte
+  tlsSecret: astarte-tls-cert
+  api:
+    deploy: true
+    exposeHousekeeping: true
+  dashboard:
+    ssl: true
+    host: dashboard.${minikube_base_network_address}.100.nip.io
+  broker:
+    deploy: false
+    serviceType: LoadBalancer

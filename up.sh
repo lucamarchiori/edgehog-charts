@@ -52,6 +52,10 @@ export HOST_FRONTEND="edgehog.${LB_IP}.nip.io"
 export HOST_BACKEND="api.edgehog.${LB_IP}.nip.io"
 export HOST_DEVICE_FORWARDER="forwarder.edgehog.${LB_IP}.nip.io"
 
+export ASTARTE_DASHBOARD_HOST="dashboard.astarte.${LB_IP}.nip.io"
+export ASTARTE_API_HOST="api.astarte.${LB_IP}.nip.io"
+export ASTARTE_BROKER_HOST="broker.astarte.${LB_IP}.nip.io"
+
 kubectl create secret generic -n edgehog-dev edgehog-db-connection \
   --from-literal="database=postgres" \
   --from-literal="username=postgres" \
@@ -73,6 +77,32 @@ helm install --namespace edgehog-dev \
       --set deviceForwarder.host=${HOST_DEVICE_FORWARDER} \
       edgehog ./chart
 
-echo "Frontend: ${HOST_FRONTEND}"
-echo "Backend: ${HOST_BACKEND}"
-echo "Device forwarder: ${HOST_DEVICE_FORWARDER}"
+# Handle Astarte deployment
+
+# Create a Realm (test) keypair
+astartectl utils gen-keypair test
+
+# Create a Housekeeping keypair
+astartectl utils gen-keypair housekeeping
+
+# Create the Realm
+astartectl housekeeping realms create test --astarte-url ${ASTARTE_API_HOST} --realm-public-key test_public.pem -k housekeeping_private.pem
+
+# Create SSL certificates for .nip.io domains
+openssl req -x509 -newkey rsa:4096 -days 365 -sha256 -nodes \
+  -keyout privkey.pem \
+  -out cert.pem  \
+  -subj '/CN=*.nip.io'
+
+kubectl create secret tls astarte-tls-cert -n edgehog-dev --cert=cert.pem --key=privkey.pem
+
+# Deploy astarte with custom values (set as environment variables)
+envsubst < astarte-sample.yaml | kubectl apply -f -
+
+# Output endpoints
+echo "EDGEHOG Frontend: ${HOST_FRONTEND}"
+echo "EDGEHOG Backend: ${HOST_BACKEND}"
+echo "EDGEHOG Device forwarder: ${HOST_DEVICE_FORWARDER}"
+
+echo "ASTARTE Dashboard: ${ASTARTE_DASHBOARD_HOST}"
+echo "ASTARTE API: ${ASTARTE_API_HOST}"
