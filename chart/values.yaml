@@ -17,7 +17,7 @@ frontend:
 
 deviceForwarder:
   # -- host of the device forwarder. It should only contain the hostname without the http:// or https:// scheme
-  host: "forwarder.edgehog..customdomain.com"
+  host: "forwarder.edgehog.customdomain.com"
   # -- port for the instance of Edgehog Device Forwarder. It defaults to 443
   port: 443
   # -- secureSessions can be either true or false, it indicates whether devices use TLS to connect to the Edgehog Device Forwarder
@@ -47,3 +47,13 @@ enabledSecrets:
   ipbase: false
   googleGeolocation: false
   googleGeocoding: false
+
+astarte:
+  # -- apiDomain is the domain where Astarte APIs are reachable.
+  apiDomain: "http://api.astarte.customdomain.com"
+  # -- realm must match the name of the Realm created in Astarte and accessible at apiDomain
+  realm: "test"
+  # -- seedsRealmPrivateKeyFile is the path to the realm's private key file (e.g. test_private.pem)
+  realmPrivateKeyFile: "../test_private.pem"
+  # -- tenantPrivateKeyFile is the path to the tenant's private key file (e.g. acme_private.pem)
+  tenantPrivateKeyFile: "../acme_private.pem"

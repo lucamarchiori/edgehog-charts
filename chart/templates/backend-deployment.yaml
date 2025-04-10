@@ -23,6 +23,14 @@ spec:
           name: http
           protocol: TCP
         env:
+        - name: SEEDS_ASTARTE_BASE_API_URL
+          value: {{ .Values.astarte.apiDomain | default "http://api.astarte.customdomain.com" | quote }}
+        - name: SEEDS_REALM
+          value: {{ .Values.astarte.test | default "test" | quote }}
+        - name: SEEDS_REALM_PRIVATE_KEY_FILE
+          value: {{ .Values.astarte.realmPrivateKeyFile | default "../test_private.pem" | quote }}
+        - name: SEEDS_TENANT_PRIVATE_KEY_FILE
+          value: {{ .Values.astarte.tenantPrivateKeyFile | default "../acme_private.pem" | quote }}
         - name: RELEASE_NAME
           value: edgehog
         - name: PORT
