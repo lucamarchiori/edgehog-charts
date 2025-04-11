@@ -37,6 +37,11 @@ resource "kubernetes_secret" "astarte-self-signed-cert" {
     namespace = "astarte"
   }
 
+/* openssl req -x509 -newkey rsa:4096 -days 365 -sha256 -nodes \
+  -keyout key.pem \
+  -out crt.pem  \
+  -subj '/CN=*.nip.io' */
+
   data = {
     "tls.crt" = file("${path.module}/crt.pem")
     "tls.key" = file("${path.module}/key.pem")

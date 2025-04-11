@@ -10,8 +10,9 @@ spec:
     deploy: true
     exposeHousekeeping: true
   dashboard:
-    ssl: true
+    ssl: false
     host: dashboard.${minikube_base_network_address}.100.nip.io
   broker:
     deploy: false
     serviceType: LoadBalancer
+    host: broker.${minikube_base_network_address}.101.nip.io

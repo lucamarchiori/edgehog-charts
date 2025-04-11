@@ -30,14 +30,14 @@ provider "kubectl" {
   config_path = "~/.kube/config"
 }
 
-resource "helm_release" "metallb" {
-  chart      = "metallb"
-  name       = "metallb"
-  namespace  = "metallb-system"
-  create_namespace = true
-  repository = "https://charts.bitnami.com/bitnami"
-  version    = "4.1.13"
-}
+# resource "helm_release" "metallb" {
+#   chart      = "metallb"
+#   name       = "metallb"
+#   namespace  = "metallb-system"
+#   create_namespace = true
+#   repository = "https://metallb.github.io/metallb"
+#   version    = "0.14.9"
+# }
 
 data "template_file" "ip-address-pool" {
   template = file("${path.module}/address-pool.tftpl")
@@ -46,14 +46,13 @@ data "template_file" "ip-address-pool" {
   }
 }
 
-resource "kubectl_manifest" "metallb-ip-address-pool" {
-  yaml_body = data.template_file.ip-address-pool.rendered
+# resource "kubectl_manifest" "metallb-ip-address-pool" {
+#   yaml_body = data.template_file.ip-address-pool.rendered
 
-  depends_on = [
-    helm_release.metallb,
-    data.template_file.ip-address-pool
-  ]
-}
+#   depends_on = [
+#     data.template_file.ip-address-pool
+#   ]
+# }
 
 resource "helm_release" "cert-manager" {
   chart      = "cert-manager"
@@ -80,20 +79,25 @@ resource "helm_release" "ingress-nginx" {
   repository = "https://kubernetes.github.io/ingress-nginx"
   version    = "4.11.5"
   create_namespace = true
+  
 
   set {
     name  = "controller.service.externalTrafficPolicy"
     value = "Local"
   }
 
-  # Consider removing this and letting MetalLB assign an IP if not strictly necessary
-  # set {
-  #   name  = "controller.service.loadBalancerIP"
-  #   value = "${var.minikube_base_network_address}.100"
-  # }
+  set {
+    name  = "controller.allowSnippetAnnotations"
+    value = true
+  }
+
+  set {
+    name  = "controller.service.loadBalancerIP"
+    value = "${var.minikube_base_network_address}.100"
+  }
 
   depends_on = [
-    kubectl_manifest.metallb-ip-address-pool,
+    # kubectl_manifest.metallb-ip-address-pool,
   ]
 }
 
@@ -110,6 +114,7 @@ module "astarte" {
   minikube_base_network_address = var.minikube_base_network_address
   scylla_ip                   = var.scylla_ip
   depends_on = [
+    module.scylla,
     helm_release.cert-manager,
     helm_release.ingress-nginx,
   ]

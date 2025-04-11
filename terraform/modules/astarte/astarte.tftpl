@@ -24,21 +24,10 @@ spec:
         cpu: "1"
         memory: 1000M
   cassandra:
-    # The cassandra spec is suitable for testing scenarios, do NOT use
-    # this config in production.
-    maxHeapSize: 1024M
-    heapNewSize: 256M
-    storage:
-      size: 30Gi
-    resources:
-      requests:
-        cpu: "1"
-        memory: 1024M
-      limits:
-        cpu: "2"
-        memory: 2048M
+    deploy: false
+    nodes: ${scylla_ip}:9042 #TODO handle list of addresses
   vernemq:
-    host: "broker.${minikube_base_network_address}.100.nip.io"
+    host: "broker.${minikube_base_network_address}.101.nip.io"
     resources:
       requests:
         cpu: 200m
